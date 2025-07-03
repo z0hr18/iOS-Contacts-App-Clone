@@ -116,7 +116,7 @@ extension ContactsViewController: UITableViewDataSource {
         var finalImage: UIImage?
 
         if let imageData = contact.imageData, let image = UIImage(data: imageData) {
-            // Manually resize
+            // Manually resize (for profile photo)
             UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
             image.draw(in: CGRect(origin: .zero, size: size))
             finalImage = UIGraphicsGetImageFromCurrentImageContext()
