@@ -113,8 +113,11 @@ final class ContactsViewModel {
         isFiltering = true
         var tempSectionTitles: [String] = []
         var tempSectionedContacts: [[ContactUsers]] = []
+        
         for (i, section) in sectionedContacts.enumerated() {
-            let filtered = section.filter { $0.fullName.lowercased().contains(query.lowercased()) }
+            let filtered = section.filter {
+                $0.fullName.lowercased().contains(query.lowercased())
+            }
             if !filtered.isEmpty {
                 tempSectionTitles.append(sectionTitles[i])
                 tempSectionedContacts.append(filtered)

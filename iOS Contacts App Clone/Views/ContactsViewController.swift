@@ -77,7 +77,8 @@ final class ContactsViewController: UIViewController {
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
-            if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
+            if let url = URL(string: UIApplication.openSettingsURLString),
+                UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url)
             }
         })
@@ -106,26 +107,26 @@ extension ContactsViewController: UITableViewDataSource {
         let displayName = contact.fullName.trimmingCharacters(in: .whitespaces)
         if displayName.isEmpty, let firstPhone = contact.phoneNumbers.first {
             cell.textLabel?.text = firstPhone
-            cell.detailTextLabel?.text = nil
         } else {
             cell.textLabel?.text = displayName
-            cell.detailTextLabel?.text = contact.phoneNumbers.first
         }
 
         let size = CGSize(width: 28, height: 28)
         var finalImage: UIImage?
-
-        if let imageData = contact.imageData, let image = UIImage(data: imageData) {
-            // Manually resize (for profile photo)
-            UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-            image.draw(in: CGRect(origin: .zero, size: size))
-            finalImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-        } else if let icon = UIImage(systemName: "person.crop.circle") {
-            UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-            icon.draw(in: CGRect(origin: .zero, size: size))
-            finalImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
+        
+        let sourceImage: UIImage? = {
+            if let imageData = contact.imageData, let image = UIImage(data: imageData) {
+                return image
+            } else {
+                return UIImage(systemName: "person.crop.circle")
+            }
+        }()
+        
+        if let image = sourceImage {
+            let renderer = UIGraphicsImageRenderer(size: size)
+            finalImage = renderer.image { _ in
+                image.draw(in: CGRect(origin: .zero, size: size))
+            }
         }
 
         cell.imageView?.image = finalImage
